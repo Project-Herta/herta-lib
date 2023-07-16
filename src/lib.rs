@@ -1,3 +1,5 @@
+pub mod math;
+
 fn calculate_level_multiplier(level: u8) -> f32 {
     match level {
         1 => 54.0000,
