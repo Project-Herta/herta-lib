@@ -7,6 +7,11 @@ pub struct Enemy {
     pub name: String,
 }
 
+pub struct EnemyDrops {
+    pub image: String,
+    pub link: String,
+}
+
 pub fn get_enemy_portrait(html: String) -> url::Url {
     let html = parse_html(html);
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
@@ -32,7 +37,29 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
             link: e.value().attr("href").unwrap().to_string(),
             name: e.value().attr("title").unwrap().to_string(),
         })
-        .collect::<Vec<_>>()
+        .collect()
+}
+
+pub fn get_enemy_drops(html: String) -> Vec<EnemyDrops> {
+    let html = parse_html(html);
+    let selector = Selector::parse("div.card-container span.card-image a").unwrap();
+    let image_selector = Selector::parse("img").unwrap();
+
+    html.select(&selector)
+        .map(|e| {
+            let image = e
+                .select(&image_selector)
+                .next()
+                .unwrap()
+                .value()
+                .attr("src")
+                .unwrap()
+                .to_string();
+            let link = e.value().attr("href").unwrap().to_string();
+
+            EnemyDrops { image, link }
+        })
+        .collect()
 }
 
 pub fn get_enemy_resistances(html: String) -> Vec<f32> {
@@ -74,5 +101,5 @@ fn select_table(
                 .unwrap()
                 / 100.0
         })
-        .collect::<Vec<_>>()
+        .collect()
 }
