@@ -10,4 +10,5 @@ name = "herta"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+scraper = "0.17.1"
 url = "2.4.0"
