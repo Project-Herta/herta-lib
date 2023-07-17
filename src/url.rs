@@ -5,7 +5,7 @@ pub enum UrlError<'a> {
     NoBaseUrl(&'a Url),
 }
 
-pub fn get_original_image<'a>(url: &'a Url) -> Result<Url, UrlError<'a>> {
+pub(crate) fn get_original_image<'a>(url: &'a Url) -> Result<Url, UrlError<'a>> {
     let cb = url
         .query_pairs()
         .filter(|(key, _val)| key.contains("cb"))
