@@ -1,3 +1,8 @@
+<center>
+<img src="./icon.png" width=200>
+</center>
+
+
 # Project Herta Backend (libherta)
 This is the repository for backend code (i.e. calculations, url manipulation, etc)
 
