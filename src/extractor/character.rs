@@ -13,7 +13,7 @@ pub struct Character {
     pub ctype_image: String,
 }
 
-fn index_characters(html: String) -> Vec<Character> {
+pub fn index_characters(html: String) -> Vec<Character> {
     let html = parse_html(html);
     let selector = Selector::parse("table.article-table > tbody").unwrap();
     let name_selector = Selector::parse("td>a").unwrap();
