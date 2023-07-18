@@ -20,6 +20,7 @@ pub fn index_characters(html: String) -> Vec<Character> {
     let name_selector = Selector::parse("td>a").unwrap();
     let rarity_selector = Selector::parse("td>img").unwrap();
     let path_selector = Selector::parse("td>span>a").unwrap();
+    let ctype_selector = Selector::parse("td>span>span>b").unwrap();
     let path_image_selector = Selector::parse("img").unwrap();
 
     let mut res = vec![];
@@ -51,15 +52,18 @@ pub fn index_characters(html: String) -> Vec<Character> {
             .unwrap();
         let path = path.value().attr("title").unwrap();
 
-        let ctype = entry.select(&path_selector).nth(0).unwrap();
-        let ctype_image = ctype
+        let ctype = entry.select(&ctype_selector).nth(0).unwrap();
+        let ctype_image = entry
+            .select(&path_selector)
+            .nth(0)
+            .unwrap()
             .select(&path_image_selector)
             .nth(0)
             .unwrap()
             .value()
             .attr("data-src")
             .unwrap();
-        let ctype = ctype.value().attr("title").unwrap();
+        let ctype = ctype.inner_html();
 
         res.push(Character {
             link: link.to_string(),
