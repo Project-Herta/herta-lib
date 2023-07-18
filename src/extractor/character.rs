@@ -1,5 +1,7 @@
 use scraper::Selector;
 
+use crate::url::canonicalize;
+
 use super::parse_html;
 
 pub struct Character {
@@ -29,7 +31,7 @@ pub fn index_characters(html: String) -> Vec<Character> {
     for entry in table.select(&row_selector).skip(1) {
         let link = entry.select(&name_selector).nth(0).unwrap().value();
         let name = link.attr("title").unwrap();
-        let link = link.attr("href").unwrap();
+        let link = canonicalize(link.attr("href").unwrap());
 
         // we skip the trailblazer because
         // its an 'adaptive' character. there

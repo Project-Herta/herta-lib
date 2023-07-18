@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use url::Url;
 
 #[derive(Debug)]
@@ -36,6 +38,10 @@ pub(crate) fn get_original_image<'a>(url: &'a Url) -> Result<Url, UrlError<'a>> 
     res.set_query(Some(cb.as_str()));
 
     Ok(res)
+}
+
+pub(crate) fn canonicalize<U: Display>(url: U) -> String {
+    format!("https://honkai-star-rail.fandom.com{}", url)
 }
 
 #[cfg(test)]
