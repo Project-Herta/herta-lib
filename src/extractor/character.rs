@@ -1,6 +1,9 @@
-use scraper::Selector;
+use std::str::FromStr;
 
-use crate::url::canonicalize;
+use scraper::Selector;
+use url::Url;
+
+use crate::url::{canonicalize, get_original_image};
 
 use super::parse_html;
 
@@ -85,18 +88,29 @@ pub async fn get_character_art(html: String) -> Option<(String, String)> {
     let portrait_selector = Selector::parse("img[alt=Portrait]").ok()?;
     let splash_selector = Selector::parse("img[alt=\"Splash Art\"]").ok()?;
 
-    let portrait = html
-        .select(&portrait_selector)
-        .nth(0)?
-        .value()
-        .attr("data-src")?
-        .to_string();
-    let splash = html
-        .select(&splash_selector)
-        .nth(0)?
-        .value()
-        .attr("data-src")?
-        .to_string();
+    let portrait = get_original_image(
+        &Url::from_str(
+            html.select(&portrait_selector)
+                .nth(0)?
+                .value()
+                .attr("data-src")?,
+        )
+        .unwrap(),
+    )
+    .unwrap()
+    .to_string();
+
+    let splash = get_original_image(
+        &Url::from_str(
+            html.select(&splash_selector)
+                .nth(0)?
+                .value()
+                .attr("data-src")?,
+        )
+        .unwrap(),
+    )
+    .unwrap()
+    .to_string();
 
     Some((portrait, splash))
 }
