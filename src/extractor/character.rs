@@ -13,6 +13,8 @@ pub struct Character {
     pub path_image: String,
     pub ctype: String,
     pub ctype_image: String,
+    pub portrait: Option<String>,
+    pub splash: Option<String>,
 }
 
 pub fn index_characters(html: String) -> Vec<Character> {
@@ -74,8 +76,14 @@ pub fn index_characters(html: String) -> Vec<Character> {
             path_image: path_image.to_string(),
             ctype: ctype.to_string(),
             ctype_image: ctype_image.to_string(),
+            portrait: None,
+            splash: None,
         })
     }
 
     res
+}
+
+pub fn get_portraits(character: &mut Character) {
+    todo!()
 }
