@@ -84,6 +84,23 @@ pub fn index_characters(html: String) -> Vec<Character> {
     res
 }
 
-pub fn get_portraits(character: &mut Character) {
-    todo!()
+pub async fn get_character_art(html: String) -> Option<(String, String)> {
+    let html = parse_html(html);
+    let portrait_selector = Selector::parse("img[alt=Portrait]").ok()?;
+    let splash_selector = Selector::parse("img[alt=\"Splash Art\"]").ok()?;
+
+    let portrait = html
+        .select(&portrait_selector)
+        .nth(0)?
+        .value()
+        .attr("data-src")?
+        .to_string();
+    let splash = html
+        .select(&splash_selector)
+        .nth(0)?
+        .value()
+        .attr("data-src")?
+        .to_string();
+
+    Some((portrait, splash))
 }
