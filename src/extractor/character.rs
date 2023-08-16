@@ -72,11 +72,15 @@ pub fn index_characters(html: String) -> Vec<Character> {
             link: link.to_string(),
             name: name.to_string(),
             rarity: rarity.to_string(),
-            rarity_image: rarity_image.to_string(),
+            rarity_image: get_original_image(&Url::from_str(rarity_image).unwrap())
+                .unwrap()
+                .to_string(),
             path: path.to_string(),
             path_image: path_image.to_string(),
             ctype: ctype.to_string(),
-            ctype_image: ctype_image.to_string(),
+            ctype_image: get_original_image(&Url::from_str(ctype_image).unwrap())
+                .unwrap()
+                .to_string(),
         })
     }
 
