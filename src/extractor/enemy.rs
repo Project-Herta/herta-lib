@@ -77,7 +77,7 @@ pub fn get_enemy_resistances(html: String) -> Vec<u8> {
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn get_enemy_effect_resistances(html: String) -> Vec<u8> {
+pub fn get_enemy_debuff_resistances(html: String) -> Vec<u8> {
     let html = parse_html(html);
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
