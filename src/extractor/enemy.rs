@@ -1,12 +1,14 @@
 use super::{parse_html, parse_url};
-use crate::url::{get_original_image, canonicalize};
+use crate::url::{canonicalize, get_original_image};
 use scraper::{Html, Selector};
 
 pub struct Enemy {
     pub link: String,
     pub name: String,
+    pub drops: Option<Vec<EnemyDrops>>,
 }
 
+#[derive(Debug)]
 pub struct EnemyDrops {
     pub image: String,
     pub link: String,
@@ -36,16 +38,18 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
         .map(|e| Enemy {
             link: canonicalize(e.value().attr("href").unwrap().to_string()),
             name: e.value().attr("title").unwrap().to_string(),
+            drops: None,
         })
         .collect()
 }
 
-pub fn get_enemy_drops(html: String) -> Vec<EnemyDrops> {
+pub fn get_enemy_drops(html: String, enemy: &mut Enemy) {
     let html = parse_html(html);
     let selector = Selector::parse("div.card-container span.card-image a").unwrap();
     let image_selector = Selector::parse("img").unwrap();
 
-    html.select(&selector)
+    let drops = html
+        .select(&selector)
         .map(|e| {
             let image = e
                 .select(&image_selector)
@@ -59,7 +63,9 @@ pub fn get_enemy_drops(html: String) -> Vec<EnemyDrops> {
 
             EnemyDrops { image, link }
         })
-        .collect()
+        .collect::<Vec<_>>();
+
+    enemy.drops = Some(drops);
 }
 
 pub fn get_enemy_resistances(html: String) -> Vec<f32> {
@@ -70,6 +76,7 @@ pub fn get_enemy_resistances(html: String) -> Vec<f32> {
 
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
+
 pub fn get_enemy_effect_resistances(html: String) -> Vec<f32> {
     let html = parse_html(html);
     let table_selector = Selector::parse("table.wikitable").unwrap();
