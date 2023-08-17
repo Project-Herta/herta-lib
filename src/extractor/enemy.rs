@@ -35,10 +35,18 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
     let selector = Selector::parse("a.category-page__member-link").unwrap();
 
     html.select(&selector)
-        .map(|e| Enemy {
-            link: canonicalize(e.value().attr("href").unwrap().to_string()),
-            name: e.value().attr("title").unwrap().to_string(),
-            drops: None,
+        .filter_map(|e| {
+            let out = Enemy {
+                link: canonicalize(e.value().attr("href").unwrap().to_string()),
+                name: e.value().attr("title").unwrap().to_string(),
+                drops: None,
+            };
+
+            if out.name.starts_with("Category") {
+                None
+            } else {
+                Some(out)
+            }
         })
         .collect()
 }
