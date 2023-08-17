@@ -1,11 +1,7 @@
-use std::str::FromStr;
-
 use scraper::Selector;
-use url::Url;
 
+use super::{parse_html, parse_url};
 use crate::url::{canonicalize, get_original_image};
-
-use super::parse_html;
 
 pub struct Character {
     pub name: String,
@@ -72,47 +68,37 @@ pub fn index_characters(html: String) -> Vec<Character> {
             link: link.to_string(),
             name: name.to_string(),
             rarity: rarity.to_string(),
-            rarity_image: get_original_image(&Url::from_str(rarity_image).unwrap())
-                .unwrap()
-                .to_string(),
+            rarity_image: parse_url(rarity_image).to_string(),
             path: path.to_string(),
             path_image: path_image.to_string(),
             ctype: ctype.to_string(),
-            ctype_image: get_original_image(&Url::from_str(ctype_image).unwrap())
-                .unwrap()
-                .to_string(),
+            ctype_image: parse_url(ctype_image).to_string(),
         })
     }
 
     res
 }
 
-pub async fn get_character_art(html: String) -> Option<(String, String)> {
+pub fn get_character_art(html: String) -> Option<(String, String)> {
     let html = parse_html(html);
     let portrait_selector = Selector::parse("img[alt=Portrait]").ok()?;
     let splash_selector = Selector::parse("img[alt=\"Splash Art\"]").ok()?;
 
-    let portrait = get_original_image(
-        &Url::from_str(
-            html.select(&portrait_selector)
-                .nth(0)?
-                .value()
-                .attr("data-src")?,
-        )
-        .unwrap(),
-    )
+    let portrait = get_original_image(&parse_url(
+        html.select(&portrait_selector)
+            .nth(0)?
+            .value()
+            .attr("data-src")?,
+    ))
     .unwrap()
     .to_string();
 
-    let splash = get_original_image(
-        &Url::from_str(
-            html.select(&splash_selector)
-                .nth(0)?
-                .value()
-                .attr("data-src")?,
-        )
-        .unwrap(),
-    )
+    let splash = get_original_image(&parse_url(
+        html.select(&splash_selector)
+            .nth(0)?
+            .value()
+            .attr("data-src")?,
+    ))
     .unwrap()
     .to_string();
 
