@@ -5,13 +5,6 @@ use scraper::{Html, Selector};
 pub struct Enemy {
     pub link: String,
     pub name: String,
-    pub drops: Option<Vec<EnemyDrops>>,
-}
-
-#[derive(Debug)]
-pub struct EnemyDrops {
-    pub image: String,
-    pub link: String,
 }
 
 pub fn get_enemy_portrait(html: String) -> url::Url {
@@ -39,7 +32,6 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
             let out = Enemy {
                 link: canonicalize(e.value().attr("href").unwrap().to_string()),
                 name: e.value().attr("title").unwrap().to_string(),
-                drops: None,
             };
 
             if out.name.starts_with("Category") {
@@ -51,32 +43,32 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
         .collect()
 }
 
-pub fn get_enemy_drops(html: String, enemy: &mut Enemy) {
-    let html = parse_html(html);
-    let selector = Selector::parse("div.card-container span.card-image a").unwrap();
-    let image_selector = Selector::parse("img").unwrap();
+// pub fn get_enemy_drops(html: String, enemy: &mut Enemy) {
+//     let html = parse_html(html);
+//     let selector = Selector::parse("div.card-container span.card-image a").unwrap();
+//     let image_selector = Selector::parse("img").unwrap();
 
-    let drops = html
-        .select(&selector)
-        .map(|e| {
-            let image = e
-                .select(&image_selector)
-                .next()
-                .unwrap()
-                .value()
-                .attr("src")
-                .unwrap()
-                .to_string();
-            let link = canonicalize(e.value().attr("href").unwrap().to_string());
+//     let drops = html
+//         .select(&selector)
+//         .map(|e| {
+//             let image = e
+//                 .select(&image_selector)
+//                 .next()
+//                 .unwrap()
+//                 .value()
+//                 .attr("src")
+//                 .unwrap()
+//                 .to_string();
+//             let link = canonicalize(e.value().attr("href").unwrap().to_string());
 
-            EnemyDrops { image, link }
-        })
-        .collect::<Vec<_>>();
+//             EnemyDrops { image, link }
+//         })
+//         .collect::<Vec<_>>();
 
-    enemy.drops = Some(drops);
-}
+//     enemy.drops = Some(drops);
+// }
 
-pub fn get_enemy_resistances(html: String) -> Vec<f32> {
+pub fn get_enemy_resistances(html: String) -> Vec<u8> {
     let html = parse_html(html);
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
@@ -85,7 +77,7 @@ pub fn get_enemy_resistances(html: String) -> Vec<f32> {
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn get_enemy_effect_resistances(html: String) -> Vec<f32> {
+pub fn get_enemy_effect_resistances(html: String) -> Vec<u8> {
     let html = parse_html(html);
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
@@ -100,7 +92,7 @@ fn select_table(
     table_selector: &Selector,
     row_selector: &Selector,
     col_selector: &Selector,
-) -> Vec<f32> {
+) -> Vec<u8> {
     html.select(&table_selector)
         .nth(n)
         .unwrap()
@@ -112,9 +104,8 @@ fn select_table(
             e.inner_html()
                 .strip_suffix("%")
                 .unwrap()
-                .parse::<f32>()
+                .parse::<u8>()
                 .unwrap()
-                / 100.0
         })
         .collect()
 }
