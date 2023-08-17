@@ -7,7 +7,7 @@ pub struct Enemy {
     pub name: String,
 }
 
-pub fn get_enemy_portrait(html: String) -> url::Url {
+pub fn get_enemy_portrait(html: String) -> String {
     let html = parse_html(html);
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
 
@@ -20,7 +20,7 @@ pub fn get_enemy_portrait(html: String) -> url::Url {
             .unwrap(),
     );
 
-    get_original_image(&image).unwrap()
+    get_original_image(&image).unwrap().to_string()
 }
 
 pub fn index_enemies(html: String) -> Vec<Enemy> {
@@ -101,11 +101,20 @@ fn select_table(
         .unwrap()
         .select(&col_selector)
         .map(|e| {
-            e.inner_html()
-                .strip_suffix("%")
-                .unwrap()
-                .parse::<u8>()
-                .unwrap()
+            let percent = e.inner_html();
+
+            // This is weird syntax, but
+            // it basically strips the newline
+            // if it exists
+            if percent.ends_with('\n') {
+                percent.strip_suffix('\n').unwrap()
+            } else {
+                percent.as_str()
+            }
+            .strip_suffix('%')
+            .unwrap()
+            .parse::<u8>()
+            .unwrap()
         })
         .collect()
 }
