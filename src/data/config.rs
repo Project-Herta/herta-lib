@@ -12,7 +12,7 @@ where
     from_reader(reader)
 }
 
-pub fn write_config<C, W>(writer: W, object: &C) -> Result<(), SerdeError>
+pub fn write_config<C, W>(writer: &mut W, object: &C) -> Result<(), SerdeError>
 where
     W: Write,
     C: Serialize + ?Sized,
