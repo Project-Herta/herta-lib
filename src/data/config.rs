@@ -21,9 +21,9 @@ where
 }
 
 pub fn get_config_dir(name: &str) -> PathBuf {
-    get_root_dir(name, Some("config".to_string()))
+    get_root_dir(name, Some("config"))
 }
 
 pub fn get_main_config(name: &str) -> PathBuf {
-    get_root_dir(name, None).join("config.json")
+    get_root_dir::<String>(name, None).join("config.json")
 }
