@@ -108,3 +108,38 @@ pub fn get_character_art(html: String) -> Option<(String, String)> {
 
     Some((portrait, splash))
 }
+
+pub fn get_voice_overs(html: String) -> Vec<(String, String)> {
+    let html = parse_html(html);
+    let voice_over_entry = Selector::parse("table.wikitable>tbody>tr").unwrap();
+    let vo_type = Selector::parse("th>div").unwrap();
+    let vo_audio = Selector::parse("th>span>a").unwrap();
+
+    let mut res = vec![];
+    for voice_over in html.select(&voice_over_entry) {
+        let audio = voice_over.select(&vo_audio).last().unwrap();
+
+        if audio
+            .value()
+            .classes()
+            .collect::<Vec<_>>()
+            .contains(&"no-audio")
+        {
+            continue;
+        }
+
+        let audio_link = audio.value().attr("href").unwrap().to_string();
+        let audio_type = voice_over
+            .select(&vo_type)
+            .last()
+            .unwrap()
+            .value()
+            .id()
+            .unwrap()
+            .to_string();
+
+        res.push((audio_type, audio_link));
+    }
+
+    res
+}
