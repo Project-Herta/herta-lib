@@ -124,8 +124,6 @@ pub fn get_voice_overs(html: String) -> Vec<(String, String)> {
             continue;
         }
 
-        dbg!(audio_type.unwrap().html());
-
         let audio = audio.unwrap();
 
         if audio
