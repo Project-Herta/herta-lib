@@ -12,4 +12,6 @@ pub fn get_root_dir<S: AsRef<Path>>(name: &str, subdir: Option<S>) -> PathBuf {
     } else {
         dir
     }
+    .canonicalize()
+    .unwrap()
 }
