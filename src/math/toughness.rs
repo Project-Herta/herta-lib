@@ -1,3 +1,5 @@
+// FIXME: This also shouldnt be in 1.0.0
+#[allow(dead_code)]
 fn calculate_level_multiplier(level: u8) -> f32 {
     match level {
         1 => 54.0000,
