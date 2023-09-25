@@ -93,13 +93,13 @@ fn select_table(
     row_selector: &Selector,
     col_selector: &Selector,
 ) -> Vec<u8> {
-    html.select(&table_selector)
+    html.select(table_selector)
         .nth(n)
         .unwrap()
-        .select(&row_selector)
+        .select(row_selector)
         .nth(2)
         .unwrap()
-        .select(&col_selector)
+        .select(col_selector)
         .map(|e| {
             let percent = e.inner_html();
 

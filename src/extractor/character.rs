@@ -26,9 +26,9 @@ pub fn index_characters(html: String) -> Vec<Character> {
     let ctype_image_selector = Selector::parse("td img").unwrap();
 
     let mut res = vec![];
-    let table = html.select(&selector).nth(0).unwrap();
+    let table = html.select(&selector).next().unwrap();
     for entry in table.select(&row_selector).skip(1) {
-        let link = entry.select(&name_selector).nth(0).unwrap().value();
+        let link = entry.select(&name_selector).next().unwrap().value();
         let name = link.attr("title").unwrap();
         let link = canonicalize(link.attr("href").unwrap());
 
@@ -40,21 +40,21 @@ pub fn index_characters(html: String) -> Vec<Character> {
             continue;
         }
 
-        let rarity = entry.select(&rarity_selector).nth(0).unwrap().value();
+        let rarity = entry.select(&rarity_selector).next().unwrap().value();
         let rarity_image = rarity.attr("data-src").unwrap();
         let rarity = rarity.attr("alt").unwrap();
 
-        let path = entry.select(&path_selector).nth(0).unwrap();
+        let path = entry.select(&path_selector).next().unwrap();
         let path_image = path
             .select(&path_image_selector)
-            .nth(0)
+            .next()
             .unwrap()
             .value()
             .attr("data-src")
             .unwrap();
         let path = path.value().attr("title").unwrap();
 
-        let ctype = entry.select(&ctype_selector).nth(0).unwrap();
+        let ctype = entry.select(&ctype_selector).next().unwrap();
         let ctype_image = entry
             .select(&ctype_image_selector)
             .last()
@@ -90,7 +90,7 @@ pub fn get_character_art(html: String) -> Option<(String, String)> {
 
     let portrait = get_original_image(&parse_url(
         html.select(&portrait_selector)
-            .nth(0)?
+            .next()?
             .value()
             .attr("data-src")?,
     ))
@@ -99,7 +99,7 @@ pub fn get_character_art(html: String) -> Option<(String, String)> {
 
     let splash = get_original_image(&parse_url(
         html.select(&splash_selector)
-            .nth(0)?
+            .next()?
             .value()
             .attr("data-src")?,
     ))
@@ -117,8 +117,8 @@ pub fn get_voice_overs(html: String) -> Vec<(String, String)> {
 
     let mut res = vec![];
     for voice_over in html.select(&voice_over_entry) {
-        let audio = voice_over.select(&vo_audio).nth(0);
-        let audio_type = voice_over.select(&vo_type).nth(0);
+        let audio = voice_over.select(&vo_audio).next();
+        let audio_type = voice_over.select(&vo_type).next();
 
         if audio.is_none() || audio_type.is_none() {
             continue;

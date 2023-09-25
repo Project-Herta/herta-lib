@@ -7,7 +7,7 @@ pub enum UrlError<'a> {
     NoBaseUrl(&'a Url),
 }
 
-pub(crate) fn get_original_image<'a>(url: &'a Url) -> Result<Url, UrlError<'a>> {
+pub(crate) fn get_original_image(url: &Url) -> Result<Url, UrlError<'_>> {
     let cb = url
         .query_pairs()
         .filter(|(key, _val)| key.contains("cb"))
@@ -16,7 +16,7 @@ pub(crate) fn get_original_image<'a>(url: &'a Url) -> Result<Url, UrlError<'a>> 
 
     let segments = url
         .path_segments()
-        .ok_or_else(|| UrlError::NoBaseUrl(url))?
+        .ok_or(UrlError::NoBaseUrl(url))?
         .map_while(|seg| {
             if seg.contains("scale-to-width") {
                 return None;
