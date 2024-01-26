@@ -33,12 +33,12 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
         .filter_map(|e| {
             // let res = get_enemy_resistances(&html);
             // let debuff_res = get_enemy_debuff_resistances(&html);
-            let portrait = get_enemy_portrait(&html);
+            // let portrait = get_enemy_portrait(&html);
 
             let out = Enemy {
                 link: canonicalize(e.value().attr("href").unwrap().to_string()),
                 name: e.value().attr("title").unwrap().to_string(),
-                portrait,
+                portrait: String::new(),
                 res: vec![],
                 debuff_res: vec![],
             };
