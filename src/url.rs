@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{Display, Write};
 
 use url::Url;
 
@@ -11,8 +11,10 @@ pub(crate) fn get_original_image(url: &Url) -> Result<Url, UrlError<'_>> {
     let cb = url
         .query_pairs()
         .filter(|(key, _val)| key.contains("cb"))
-        .map(|(k, v)| format!("{}={}", k, v))
-        .collect::<String>();
+        .fold(String::new(), |mut out, (k, v)| {
+            let _ = write!(out, "{}={}", k, v);
+            out
+        });
 
     let segments = url
         .path_segments()
