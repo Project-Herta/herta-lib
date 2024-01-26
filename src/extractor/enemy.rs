@@ -5,10 +5,12 @@ use scraper::{Html, Selector};
 pub struct Enemy {
     pub link: String,
     pub name: String,
+    pub portrait: String,
+    pub res: Vec<u8>,
+    pub debuff_res: Vec<u8>,
 }
 
-pub fn get_enemy_portrait(html: String) -> String {
-    let html = parse_html(html);
+fn get_enemy_portrait(html: &Html) -> String {
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
 
     let image = parse_url(
@@ -29,9 +31,16 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
 
     html.select(&selector)
         .filter_map(|e| {
+            let res = get_enemy_resistances(&html);
+            let debuff_res = get_enemy_debuff_resistances(&html);
+            let portrait = get_enemy_portrait(&html);
+
             let out = Enemy {
                 link: canonicalize(e.value().attr("href").unwrap().to_string()),
                 name: e.value().attr("title").unwrap().to_string(),
+                portrait,
+                res,
+                debuff_res,
             };
 
             if out.name.starts_with("Category") {
@@ -68,8 +77,7 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
 //     enemy.drops = Some(drops);
 // }
 
-pub fn get_enemy_resistances(html: String) -> Vec<u8> {
-    let html = parse_html(html);
+fn get_enemy_resistances(html: &Html) -> Vec<u8> {
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
     let col_selector = Selector::parse("td").unwrap();
@@ -77,8 +85,7 @@ pub fn get_enemy_resistances(html: String) -> Vec<u8> {
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn get_enemy_debuff_resistances(html: String) -> Vec<u8> {
-    let html = parse_html(html);
+fn get_enemy_debuff_resistances(html: &Html) -> Vec<u8> {
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
     let col_selector = Selector::parse("td").unwrap();
@@ -88,7 +95,7 @@ pub fn get_enemy_debuff_resistances(html: String) -> Vec<u8> {
 
 fn select_table(
     n: usize,
-    html: Html,
+    html: &Html,
     table_selector: &Selector,
     row_selector: &Selector,
     col_selector: &Selector,
