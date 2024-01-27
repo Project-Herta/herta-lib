@@ -15,7 +15,7 @@ pub struct Character {
 }
 
 pub fn index_characters(html: String) -> Vec<Character> {
-    let html = parse_html(html);
+    let html = parse_html(&html);
     let selector = Selector::parse("table.article-table>tbody").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
     let name_selector = Selector::parse("td>a").unwrap();
@@ -84,7 +84,7 @@ pub fn index_characters(html: String) -> Vec<Character> {
 }
 
 pub fn get_character_art(html: String) -> Option<(String, String)> {
-    let html = parse_html(html);
+    let html = parse_html(&html);
     let portrait_selector = Selector::parse("img[alt=Portrait]").ok()?;
     let splash_selector = Selector::parse("img[alt=\"Splash Art\"]").ok()?;
 
@@ -110,7 +110,7 @@ pub fn get_character_art(html: String) -> Option<(String, String)> {
 }
 
 pub fn get_voice_overs(html: String) -> Vec<(String, String)> {
-    let html = parse_html(html);
+    let html = parse_html(&html);
     let voice_over_entry = Selector::parse("table.wikitable>tbody>tr").unwrap();
     let vo_type = Selector::parse("th>div").unwrap();
     let vo_audio = Selector::parse("td>span>a").unwrap();

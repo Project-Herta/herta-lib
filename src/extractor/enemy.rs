@@ -7,7 +7,7 @@ pub struct Enemy {
     pub name: String,
 }
 
-pub fn get_enemy_portrait(html: String) -> String {
+pub fn get_enemy_portrait(html: &str) -> String {
     let html = parse_html(html);
 
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
@@ -25,7 +25,7 @@ pub fn get_enemy_portrait(html: String) -> String {
 }
 
 pub fn index_enemies(html: String) -> Vec<Enemy> {
-    let html = parse_html(html);
+    let html = parse_html(&html);
     let selector = Selector::parse("a.category-page__member-link").unwrap();
 
     html.select(&selector)
@@ -69,7 +69,7 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
 //     enemy.drops = Some(drops);
 // }
 
-pub fn get_enemy_resistances(html: String) -> Vec<u8> {
+pub fn get_enemy_resistances(html: &str) -> Vec<u8> {
     let html = parse_html(html);
 
     let table_selector = Selector::parse("table.wikitable").unwrap();
@@ -79,7 +79,7 @@ pub fn get_enemy_resistances(html: String) -> Vec<u8> {
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn get_enemy_debuff_resistances(html: String) -> Vec<u8> {
+pub fn get_enemy_debuff_resistances(html: &str) -> Vec<u8> {
     let html = parse_html(html);
 
     let table_selector = Selector::parse("table.wikitable").unwrap();
