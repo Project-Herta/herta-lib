@@ -7,21 +7,14 @@ pub struct Enemy {
     pub name: String,
 }
 
-pub fn get_enemy_portrait(html: &str) -> String {
+pub fn get_enemy_portrait(html: &str) -> Option<String> {
     let html = parse_html(html);
 
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
 
-    let image = parse_url(
-        html.select(&selector)
-            .next()
-            .unwrap()
-            .value()
-            .attr("src")
-            .unwrap(),
-    );
+    let image = parse_url(html.select(&selector).next()?.value().attr("src").unwrap());
 
-    get_original_image(&image).unwrap().to_string()
+    Some(get_original_image(&image).unwrap().to_string())
 }
 
 pub fn index_enemies(html: String) -> Vec<Enemy> {
