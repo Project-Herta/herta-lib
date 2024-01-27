@@ -7,7 +7,9 @@ pub struct Enemy {
     pub name: String,
 }
 
-pub fn get_enemy_portrait(html: &Html) -> String {
+pub fn get_enemy_portrait(html: String) -> String {
+    let html = parse_html(html);
+
     let selector = Selector::parse("img.pi-image-thumbnail").unwrap();
 
     let image = parse_url(
@@ -67,7 +69,9 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
 //     enemy.drops = Some(drops);
 // }
 
-pub fn get_enemy_resistances(html: &Html) -> Vec<u8> {
+pub fn get_enemy_resistances(html: String) -> Vec<u8> {
+    let html = parse_html(html);
+
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
     let col_selector = Selector::parse("td").unwrap();
@@ -75,7 +79,9 @@ pub fn get_enemy_resistances(html: &Html) -> Vec<u8> {
     select_table(0, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn get_enemy_debuff_resistances(html: &Html) -> Vec<u8> {
+pub fn get_enemy_debuff_resistances(html: String) -> Vec<u8> {
+    let html = parse_html(html);
+
     let table_selector = Selector::parse("table.wikitable").unwrap();
     let row_selector = Selector::parse("tr").unwrap();
     let col_selector = Selector::parse("td").unwrap();
@@ -83,9 +89,9 @@ pub fn get_enemy_debuff_resistances(html: &Html) -> Vec<u8> {
     select_table(1, html, &table_selector, &row_selector, &col_selector)
 }
 
-pub fn select_table(
+fn select_table(
     n: usize,
-    html: &Html,
+    html: Html,
     table_selector: &Selector,
     row_selector: &Selector,
     col_selector: &Selector,
