@@ -5,9 +5,6 @@ use scraper::{Html, Selector};
 pub struct Enemy {
     pub link: String,
     pub name: String,
-    pub portrait: String,
-    pub res: Vec<u8>,
-    pub debuff_res: Vec<u8>,
 }
 
 pub fn get_enemy_portrait(html: &Html) -> String {
@@ -31,16 +28,9 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
 
     html.select(&selector)
         .filter_map(|e| {
-            // let res = get_enemy_resistances(&html);
-            // let debuff_res = get_enemy_debuff_resistances(&html);
-            // let portrait = get_enemy_portrait(&html);
-
             let out = Enemy {
                 link: canonicalize(e.value().attr("href").unwrap().to_string()),
                 name: e.value().attr("title").unwrap().to_string(),
-                portrait: String::new(),
-                res: vec![],
-                debuff_res: vec![],
             };
 
             if out.name.starts_with("Category") {
