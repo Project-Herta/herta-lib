@@ -131,6 +131,7 @@ pub fn get_voice_overs(html: String) -> Vec<(String, String)> {
             .classes()
             .collect::<Vec<_>>()
             .contains(&"no-audio")
+            || audio.value().attr("href").unwrap().starts_with("/")
         {
             continue;
         }
