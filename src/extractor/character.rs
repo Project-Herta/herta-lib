@@ -4,6 +4,7 @@ use super::{parse_html, parse_url};
 use crate::url::{canonicalize, get_original_image};
 
 pub struct Character {
+    pub id: usize,
     pub name: String,
     pub link: String,
     pub rarity: String,
@@ -27,7 +28,7 @@ pub fn index_characters(html: String) -> Vec<Character> {
 
     let mut res = vec![];
     let table = html.select(&selector).next().unwrap();
-    for entry in table.select(&row_selector).skip(1) {
+    for (indx, entry) in table.select(&row_selector).skip(1).into_iter().enumerate() {
         let link = entry.select(&name_selector).next().unwrap().value();
         let name = link.attr("title").unwrap();
         let link = canonicalize(link.attr("href").unwrap());
@@ -65,6 +66,7 @@ pub fn index_characters(html: String) -> Vec<Character> {
         let ctype = ctype.inner_html();
 
         res.push(Character {
+            id: indx,
             link: link.to_string(),
             name: name.to_string(),
             rarity: rarity.to_string(),

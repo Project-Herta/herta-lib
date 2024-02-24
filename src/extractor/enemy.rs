@@ -3,6 +3,7 @@ use crate::url::{canonicalize, get_original_image};
 use scraper::{Html, Selector};
 
 pub struct Enemy {
+    pub id: usize,
     pub link: String,
     pub name: String,
 }
@@ -22,8 +23,10 @@ pub fn index_enemies(html: String) -> Vec<Enemy> {
     let selector = Selector::parse("a.category-page__member-link").unwrap();
 
     html.select(&selector)
-        .filter_map(|e| {
+        .enumerate()
+        .filter_map(|(indx, e)| {
             let out = Enemy {
+                id: indx,
                 link: canonicalize(e.value().attr("href").unwrap().to_string()),
                 name: e.value().attr("title").unwrap().to_string(),
             };
